@@ -1,61 +1,77 @@
-#! /usr/bin/env python3
-import ctypes
-import enum
-import sys
+import win32com.client
+x=0
+wmi = win32com.client.GetObject("winmgmts:")
+for usb in wmi.ExecQuery("SELECT * FROM Win32_PnPEntity WHERE Caption LIKE '%USB%'"):
+    try:
+        print("Name:", usb.Name)
+        print("DeviceID:", usb.DeviceID)
+        print()
+        x+=1
+    except Exception as e:
+        print(f"Error accessing properties: {e}")
 
 
-# Reference:
-# msdn.microsoft.com/en-us/library/windows/desktop/bb762153(v=vs.85).aspx
+print(x)
+
+x=r"""
 
 
-class SW(enum.IntEnum):
+Name: Périphérique d’entrée USB
+DeviceID: USB\VID_3434&PID_0313&MI_01\6&30B99A73&0&0001 ####
 
-    HIDE = 0
-    MAXIMIZE = 3
-    MINIMIZE = 6
-    RESTORE = 9
-    SHOW = 5
-    SHOWDEFAULT = 10
-    SHOWMAXIMIZED = 3
-    SHOWMINIMIZED = 2
-    SHOWMINNOACTIVE = 7
-    SHOWNA = 8
-    SHOWNOACTIVATE = 4
-    SHOWNORMAL = 1
+Name: Périphérique d’entrée USB
+DeviceID: USB\VID_3434&PID_0313&MI_02\6&30B99A73&0&0002 ####
 
+Name: Périphérique d’entrée USB
+DeviceID: USB\VID_093A&PID_2521\5&3B8EB818&0&1
 
-class ERROR(enum.IntEnum):
+Name: Périphérique d’entrée USB
+DeviceID: USB\VID_3434&PID_0313&MI_00\6&30B99A73&0&0000 ####
 
-    ZERO = 0
-    FILE_NOT_FOUND = 2
-    PATH_NOT_FOUND = 3
-    BAD_FORMAT = 11
-    ACCESS_DENIED = 5
-    ASSOC_INCOMPLETE = 27
-    DDE_BUSY = 30
-    DDE_FAIL = 29
-    DDE_TIMEOUT = 28
-    DLL_NOT_FOUND = 32
-    NO_ASSOC = 31
-    OOM = 8
-    SHARE = 26
+Name: Périphérique USB composite
+DeviceID: USB\VID_0408&PID_5321\0X0001
+
+Name: Périphérique USB composite
+DeviceID: USB\VID_3434&PID_0313\5&3B8EB818&0&2 ####
+
+Name: Hub USB racine (USB 3.0)
+DeviceID: USB\ROOT_HUB30\4&8CA4CD4&0&0
+
+Name: Hub USB racine (USB 3.0)
+DeviceID: USB\ROOT_HUB30\1&2B53A856&0&0
+
+Name: Contrôleur hôte Intel(R) USB 3.1 eXtensible - 1.10 (Microsoft)
+DeviceID: PCI\VEN_8086&DEV_9DED&SUBSYS_8532103C&REV_30\3&11583659&0&A0
+
+Name: Parsec Virtual USB Adapter
+DeviceID: ROOT\USB\0000
 
 
-def bootstrap():
-    if ctypes.windll.shell32.IsUserAnAdmin():
-        main()
-    else:
-        hinstance = ctypes.windll.shell32.ShellExecuteW(
-            None, 'runas', sys.executable, sys.argv[0], None, SW.SHOWNORMAL
-        )
-        if hinstance <= 32:
-            raise RuntimeError(ERROR(hinstance))
 
+Name: Périphérique USB composite
+DeviceID: USB\VID_3434&PID_0313\5&3B8EB818&0&2
 
-def main():
-    # Your Code Here
-    print(input('Echo: '))
+Name: Périphérique d’entrée USB
+DeviceID: USB\VID_3434&PID_0313&MI_01\6&30B99A73&0&0001
 
+Name: Périphérique d’entrée USB
+DeviceID: USB\VID_3434&PID_0313&MI_02\6&30B99A73&0&0002
 
-if __name__ == '__main__':
-    bootstrap()
+Name: Hub USB racine (USB 3.0)
+DeviceID: USB\ROOT_HUB30\4&8CA4CD4&0&0
+
+Name: Hub USB racine (USB 3.0)
+DeviceID: USB\ROOT_HUB30\1&2B53A856&0&0
+
+Name: Contrôleur hôte Intel(R) USB 3.1 eXtensible - 1.10 (Microsoft)
+DeviceID: PCI\VEN_8086&DEV_9DED&SUBSYS_8532103C&REV_30\3&11583659&0&A0
+
+Name: Parsec Virtual USB Adapter
+DeviceID: ROOT\USB\0000
+
+Name: Périphérique d’entrée USB
+DeviceID: USB\VID_3434&PID_0313&MI_00\6&30B99A73&0&0000
+
+Name: Périphérique USB composite
+DeviceID: USB\VID_0408&PID_5321\0X0001
+"""
